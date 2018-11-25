@@ -1,9 +1,7 @@
 package com.github.jeesun.thymeleaf.extras.dialect;
 
-import com.github.jeesun.thymeleaf.extras.processor.HeadlinesElementTagProcessor;
-import com.github.jeesun.thymeleaf.extras.processor.SayToAttributeTagProcessor;
-import com.github.jeesun.thymeleaf.extras.processor.SayToPlanetAttributeTagProcessor;
-import com.github.jeesun.thymeleaf.extras.processor.SelectElementTagProcessor;
+import com.github.jeesun.thymeleaf.extras.processor.*;
+import org.springframework.cache.CacheManager;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
@@ -18,18 +16,25 @@ import java.util.Set;
  * @create 2018-09-02 15:03
  **/
 
-public class HelloDialect extends AbstractProcessorDialect {
+public class DbDialect extends AbstractProcessorDialect {
 
     /**
      * 定义方言名称
      */
-    private static final String DIALECT_NAME = "Data Table Dialect";
+    private static final String DIALECT_NAME = "Database Dialect";
 
     private JdbcTemplate jdbcTemplate;
+    private CacheManager cacheManager;
 
-    public HelloDialect(JdbcTemplate jdbcTemplate){
+    public DbDialect(JdbcTemplate jdbcTemplate){
         super(DIALECT_NAME, "t", 1000);
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public DbDialect(JdbcTemplate jdbcTemplate, CacheManager cacheManager){
+        super(DIALECT_NAME, "t", 1000);
+        this.jdbcTemplate = jdbcTemplate;
+        this.cacheManager = cacheManager;
     }
 
     /*
@@ -43,10 +48,8 @@ public class HelloDialect extends AbstractProcessorDialect {
     @Override
     public Set<IProcessor> getProcessors(final String dialectPrefix) {
         final Set<IProcessor> processors = new HashSet<>();
-        processors.add(new SayToAttributeTagProcessor(dialectPrefix));
-        processors.add(new SayToPlanetAttributeTagProcessor(dialectPrefix, jdbcTemplate));
-        processors.add(new HeadlinesElementTagProcessor(dialectPrefix, jdbcTemplate));
-        processors.add(new SelectElementTagProcessor(dialectPrefix, jdbcTemplate));
+        processors.add(new SelectElementTagProcessor(dialectPrefix, jdbcTemplate, cacheManager));
+        processors.add(new DictTypeTagProcessor(dialectPrefix, jdbcTemplate, cacheManager));
         return processors;
     }
 }

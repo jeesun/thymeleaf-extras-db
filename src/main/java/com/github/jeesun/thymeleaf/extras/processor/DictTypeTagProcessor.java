@@ -17,33 +17,29 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.AbstractElementTagProcessor;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.spring4.context.SpringContextUtils;
-import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.unbescape.html.HtmlEscape;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * 下拉框
+ * 字典
  *
  * @author simon
- * @date 2018-09-17
+ * @date 2018-09-28
  **/
 
-public class SelectElementTagProcessor extends AbstractElementTagProcessor {
-    private Logger log = LoggerFactory.getLogger(SelectElementTagProcessor.class);
-
-    private static final String TAG_NAME = "select";
+public class DictTypeTagProcessor extends AbstractElementTagProcessor {
+    private Logger log = LoggerFactory.getLogger(DictTypeTagProcessor.class);
+    private static final String TAG_NAME = "dict";
     private static final int PRECEDENCE = 1000;
     private JdbcTemplate jdbcTemplate;
     private ListOptionService listOptionService;
 
-    public SelectElementTagProcessor(final String dialectPrefix, JdbcTemplate jdbcTemplate) {
+    public DictTypeTagProcessor(final String dialectPrefix, JdbcTemplate jdbcTemplate) {
         super(
                 TemplateMode.HTML, // This processor will apply only to HTML mode
                 dialectPrefix,     // Prefix to be applied to name for matching
@@ -56,7 +52,7 @@ public class SelectElementTagProcessor extends AbstractElementTagProcessor {
         this.listOptionService = new ListOptionServiceImpl();
     }
 
-    public SelectElementTagProcessor(final String dialectPrefix, JdbcTemplate jdbcTemplate, CacheManager cacheManager) {
+    public DictTypeTagProcessor(final String dialectPrefix, JdbcTemplate jdbcTemplate, CacheManager cacheManager) {
         super(
                 TemplateMode.HTML, // This processor will apply only to HTML mode
                 dialectPrefix,     // Prefix to be applied to name for matching
@@ -71,13 +67,10 @@ public class SelectElementTagProcessor extends AbstractElementTagProcessor {
 
     @Override
     protected void doProcess(
-            final ITemplateContext context,
-            final IProcessableElementTag tag,
-            final IElementTagStructureHandler structureHandler) {
-        //html空格占位符
-        String nbsp = "&nbsp;";
+            ITemplateContext context,
+            IProcessableElementTag tag,
+            IElementTagStructureHandler structureHandler) {
         List<String> options = new ArrayList<>();
-
         final IEngineConfiguration configuration = context.getConfiguration();
 
         final IStandardExpressionParser parser =
@@ -90,6 +83,7 @@ public class SelectElementTagProcessor extends AbstractElementTagProcessor {
         final String id = tag.getAttributeValue("id");
         final String name = tag.getAttributeValue("name");
         final String dataLiveSearch = tag.getAttributeValue("data-live-search");
+        final String dictName = tag.getAttributeValue("dict-name");
         final String style = tag.getAttributeValue("style");
         final String multiple = tag.getAttributeValue("multiple");
         final Boolean allowEmpty = Boolean.parseBoolean(tag.getAttributeValue("allow-empty"));
@@ -106,32 +100,22 @@ public class SelectElementTagProcessor extends AbstractElementTagProcessor {
             classValue = "";
         }
 
-        //属性规则：表名,显示的字段名[,作为option的value的字段名][,查询条件]
-        final String query = tag.getAttributeValue("query");
-        if (!StringUtils.isEmpty(query)) {
-            List<ListOption> listOptions = listOptionService.cacheSelect(query, order, jdbcTemplate, cacheable);
-            for (ListOption listOption : listOptions) {
-                StringBuilder option = new StringBuilder();
-                option.append("<option value=\"");
-                option.append(listOption.getValue());
-                option.append("\">");
-                option.append(listOption.getText());
-                option.append("</option>");
-                options.add(option.toString());
-            }
-            if(allowEmpty){
-                if (!StringUtils.isEmpty(emptyMessage)){
-                    options.add(0, "<option value=\"\">" + emptyMessage + "</option>");
-                }else{
-                    options.add(0, "<option value=\"\">&nbsp;</option>");
-                }
+        List<ListOption> listOptionList = listOptionService.cache(dictName, jdbcTemplate, cacheable);
+        for(ListOption listOption : listOptionList){
+            options.add("<option value=\"" + listOption.getValue() + "\">" + listOption.getText() + "</option>");
+        }
+
+        if (allowEmpty){
+            if(!StringUtils.isEmpty(emptyMessage)){
+                options.add(0, "<option value=\"\">" + emptyMessage + "</option>");
+            }else{
+                options.add(0, "<option value=\"\">&nbsp;</option>");
             }
         }
 
         final IModelFactory modelFactory = context.getModelFactory();
 
         final IModel model = modelFactory.createModel();
-        model.add(modelFactory.createText("\n\t"));
 
         IProcessableElementTag openElementTag = modelFactory.createOpenElementTag("select", "class", classValue);
         if (!StringUtils.isEmpty(dataLiveSearch)) {
