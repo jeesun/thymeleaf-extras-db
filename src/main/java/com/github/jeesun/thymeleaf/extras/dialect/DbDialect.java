@@ -13,7 +13,6 @@ import java.util.Set;
  * 自定义标签
  *
  * @author simon
- * @create 2018-09-02 15:03
  **/
 
 public class DbDialect extends AbstractProcessorDialect {

@@ -29,7 +29,6 @@ import java.util.List;
  * 字典
  *
  * @author simon
- * @date 2018-09-28
  **/
 
 public class DictTypeTagProcessor extends AbstractElementTagProcessor {

@@ -32,7 +32,6 @@ import java.util.Map;
  * 下拉框
  *
  * @author simon
- * @date 2018-09-17
  **/
 
 public class SelectElementTagProcessor extends AbstractElementTagProcessor {

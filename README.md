@@ -4,6 +4,15 @@
 ## 简介
 thymeleaf-extras-db是针对thymeleaf的扩展，主要是简化前端select标签数据的获取，让select标签直接从数据库加载数据，而不需要单独写接口，支持缓存。
 
+## 导入
+```
+<dependency>
+    <groupId>com.github.jeesun.thymeleaf.extras</groupId>
+    <artifactId>thymeleaf-extras-db</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
 ## 使用教程
 thymeleaf-extras-db目前支持两种自定义标签t:dict和t:select，两个标签仅一个属性不同，其他属性两者都支持。t:dict和t:select都支持普通select标签属性，也支持select2和easyui-combobox属性。需要注意的是，t:dict标签的数据，是从表t_dict_type和t_dict_type_group查询的，需要建表[mysql.sql](mysql.sql)。
 ```

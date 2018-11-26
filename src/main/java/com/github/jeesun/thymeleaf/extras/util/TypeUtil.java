@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * @author simon
- * @create 2018-08-21 15:04
  **/
 
 public class TypeUtil {

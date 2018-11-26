@@ -6,7 +6,6 @@ import java.io.Serializable;
  * 简单的字典
  *
  * @author simon
- * @date 2018-11-25
  **/
 
 public class ListOption implements Serializable {

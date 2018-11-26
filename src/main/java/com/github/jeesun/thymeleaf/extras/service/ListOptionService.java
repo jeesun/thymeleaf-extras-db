@@ -9,7 +9,6 @@ import java.util.List;
  * 简单的字典service
  *
  * @author simon
- * @date 2018-11-25
  **/
 
 public interface ListOptionService {

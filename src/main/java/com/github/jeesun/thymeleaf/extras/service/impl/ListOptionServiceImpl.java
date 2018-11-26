@@ -20,7 +20,6 @@ import java.util.Map;
  * 简单的字典service impl
  *
  * @author simon
- * @date 2018-11-25
  **/
 
 public class ListOptionServiceImpl implements ListOptionService {

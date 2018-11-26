@@ -2,6 +2,16 @@
 
 # thymeleaf-extras-db
 thymeleaf-extras-db is a thymeleaf extra plugin for select tag.It aims to load and cache data for select tag from database directly, instead of web api.
+
+## import jar
+```
+<dependency>
+    <groupId>com.github.jeesun.thymeleaf.extras</groupId>
+    <artifactId>thymeleaf-extras-db</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
 ## Use tutorial
 thymeleaf-extras-db currently supports two custom tag `t:dict` and `t:select`, they have most of the same attributes, only one difference. `t:dict` and `t:select` both support normal select tag attributes, also support `select2` and `easyui-combobox` attributes.But what needs attention is `t:dict` tag's data is from table `t_dict_type` and `t_dict_type_group`, that means you need create table [mysql.sql](mysql.sql)。
 ```
